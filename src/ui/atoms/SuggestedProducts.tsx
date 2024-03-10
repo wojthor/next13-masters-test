@@ -1,7 +1,11 @@
-import { getProductList } from "@/app/api/products";
+import { getProductList } from "@/api/products";
 import { ProductList } from "@/ui/organism/ProductList";
 
 export const SuggestedProducts = async () => {
 	const products = await getProductList();
-	return <ProductList products={products.slice(-4)} />;
+	return (
+		<div data-testid="related-products">
+			<ProductList products={products.slice(-4)} />;
+		</div>
+	);
 };

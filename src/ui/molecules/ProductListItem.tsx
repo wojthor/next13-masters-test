@@ -9,7 +9,7 @@ type Product = {
 
 export const ProductListItem = ({ product }: Product) => {
 	return (
-		<li>
+		<li key={product.id}>
 			<article>
 				<Link href={`/product/${product.id}`}>
 					<ProductCoverImage src={product.coverImage.src} alt={product.coverImage.alt} />

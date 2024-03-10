@@ -25,14 +25,13 @@ export const ActiveLink = ({
 }: ActiveLinkProps) => {
 	const pathname = usePathname();
 	const isActive = partialMatch
-		? pathname.startsWith(href) && (!exact || pathname === href)
+		? pathname === href && (!exact || pathname === href)
 		: pathname === href;
 	return (
 		<Link
 			href={href}
 			className={clsx(className, {
 				[activeClassName || "active"]: isActive,
-				underline: isActive,
 			})}
 			aria-current={isActive ? "page" : undefined}
 		>

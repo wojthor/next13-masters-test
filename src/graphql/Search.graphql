@@ -1,0 +1,16 @@
+query Search($search: String) {
+	products(search: $search) {
+		data {
+			name
+			images {
+				url
+			}
+			id
+			description
+			categories {
+				name
+			}
+			price
+		}
+	}
+}

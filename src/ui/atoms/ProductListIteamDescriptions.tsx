@@ -1,3 +1,4 @@
+import { formatMoney } from "@/app/utils/formatMoney";
 import { type ProductItemType } from "@/ui/types";
 
 type Product = {
@@ -8,7 +9,7 @@ export const ProductListItemDescription = ({ product: { category, name, price } 
 	return (
 		<div className="mt-2 flex justify-between">
 			<div>
-				<h3 className="text-white-700 text-sm font-semibold">{name}</h3>
+				<h3 className="text-sm font-semibold text-black">{name}</h3>
 				<p className="text-sm text-gray-500">
 					<span className="sr-only">Kategoria </span>
 					{category}
@@ -16,9 +17,9 @@ export const ProductListItemDescription = ({ product: { category, name, price } 
 			</div>
 
 			<div className="flex flex-row">
-				<p className="text-white-700 text-sm font-medium">
+				<p className="text-sm font-medium text-black">
 					<span className="sr-only">Cena: </span>
-					{price} zł
+					{formatMoney(price / 100)}
 				</p>
 			</div>
 		</div>
