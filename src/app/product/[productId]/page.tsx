@@ -28,7 +28,7 @@ const back = (
 );
 
 export const generateStaticParams = async () => {
-	const products = await getProductList();
+	const products = await getProductList({ sort: "DEFAULT" });
 	return products.map((product) => ({
 		productId: product.id,
 	}));
@@ -36,15 +36,14 @@ export const generateStaticParams = async () => {
 
 async function addProductToCartAction(_formData: FormData) {
 	"use server";
-
-	//Pobiera id produktu z formularza
+	// Pobierz id produktu z formularza
 	const productId = _formData.get("productId");
 	if (!productId) {
 		console.error("productId is missing.");
 		return;
 	}
 
-	//Pobiera id koszyka z plików cookie
+	// Pobierz id koszyka z plików cookie
 	const cartIdFromCookies = cookies().get("cartId")?.value;
 	let CartId: string;
 	if (cartIdFromCookies) {
@@ -67,11 +66,10 @@ async function addProductToCartAction(_formData: FormData) {
 		cookies().set("cartId", CartId);
 	}
 
-	//Sprawdza czy produkt jest w koszyku i jesli jest to zwieksza jego ilosc o 1
-	// jesli nie to dodaje go do koszyka
+	// Sprawdza czy produkt jest w koszyku i jeśli jest, zwiększa jego ilość o 1
+	// jeśli nie, dodaje go do koszyka
 	const searchCart = await getCart();
 	const findId = searchCart.cart?.items.map((item) => item.product.id);
-
 	const currentQuantity = searchCart.cart?.items.find(
 		(item) => item.product.id === productId,
 	)?.quantity;

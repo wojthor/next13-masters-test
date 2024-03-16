@@ -13,7 +13,7 @@ export const ReviewBlock = ({ review }: { review: GetReviewQuery }) => {
 					<div key={review.title} className="">
 						<div className="mx-9 flex flex-col ">
 							<div className=" ">
-								<h1 className="text-lg font-semibold text-gray-900">{review.author}</h1>
+								<h2 className="text-lg font-semibold text-gray-900">{review.author}</h2>
 								<h2 className="text-lg font-light text-gray-900">
 									<Stack spacing={1}>
 										<Rating name="size-small" defaultValue={review.rating} size="small" readOnly />
@@ -24,9 +24,9 @@ export const ReviewBlock = ({ review }: { review: GetReviewQuery }) => {
 								</h3>
 							</div>
 							<div className=" ">
-								<h1 className="mb-2 mt-4 space-y-6 text-sm font-bold text-gray-600">
+								<h2 className="mb-2 mt-4 space-y-6 text-sm font-bold text-gray-600">
 									{review.title}
-								</h1>
+								</h2>
 								<p className="mt-2 text-sm italic text-gray-600">{review.description}</p>
 							</div>
 						</div>

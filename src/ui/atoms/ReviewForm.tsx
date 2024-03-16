@@ -2,7 +2,7 @@
 import Rating from "@mui/material/Rating";
 import Stack from "@mui/material/Stack";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+
 import { SendReview } from "@/app/cart/actions";
 
 export const RevievForm = ({ productId }: { productId: string }) => {
@@ -13,7 +13,7 @@ export const RevievForm = ({ productId }: { productId: string }) => {
 	const [rating, setRating] = useState(0);
 
 	console.log(productId);
-	const router = useRouter();
+
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		e.stopPropagation();
@@ -34,10 +34,7 @@ export const RevievForm = ({ productId }: { productId: string }) => {
 							<div className="mt-2">
 								<div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
 									<input
-										type="text"
-										name="title"
-										id="title"
-										autoComplete="username"
+										name="headline"
 										value={title}
 										onChange={(e) => setTitle(e.target.value)}
 										className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
@@ -51,7 +48,7 @@ export const RevievForm = ({ productId }: { productId: string }) => {
 							<div className="mt-2">
 								<textarea
 									id="description"
-									name="description"
+									name="content"
 									rows={3}
 									className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 									value={description}
@@ -62,7 +59,7 @@ export const RevievForm = ({ productId }: { productId: string }) => {
 						<div className="sm:col-span-4">
 							<Stack spacing={1}>
 								<Rating
-									name="half-rating"
+									name="rating"
 									defaultValue={0}
 									value={rating}
 									onChange={(event, newValue) => {
@@ -82,7 +79,7 @@ export const RevievForm = ({ productId }: { productId: string }) => {
 								<div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
 									<input
 										type="text"
-										name="username"
+										name="name"
 										id="username"
 										autoComplete="username"
 										value={author}
@@ -119,7 +116,7 @@ export const RevievForm = ({ productId }: { productId: string }) => {
 							setRating(rating);
 							setTitle(title);
 							await SendReview(productId, title, description, author, email, rating);
-							router.refresh();
+							window.location.reload();
 							setDescription("");
 							setEmail("");
 							setAuthor("");

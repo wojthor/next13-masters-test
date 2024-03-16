@@ -9,6 +9,9 @@ query ProductCategoryBySlug($slug: String) {
 				url
 			}
 			price
+			categories {
+				name
+			}
 		}
 	}
 }

@@ -9,11 +9,11 @@ import { ProductList } from "@/ui/organism/ProductList";
 
 export default async function SearchPage() {
 	const searchParams = useSearchParams();
-	const search = searchParams.get("query");
+	const query = searchParams.get("query");
 	const res = await executeGraphQL({
 		query: SearchDocument,
 		variables: {
-			search: search,
+			search: query,
 		},
 	});
 	const products = res.products.data.map((product) => {
@@ -34,7 +34,7 @@ export default async function SearchPage() {
 					<div className="mx-auto max-w-7xl px-8">
 						<div className="mx-auto py-8">
 							<h1>
-								Znaleziono {products.length} produktów pod frazą "{search}"
+								Znaleziono {products.length} produktów pod frazą "{query}"
 							</h1>
 						</div>
 					</div>

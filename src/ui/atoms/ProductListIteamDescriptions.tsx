@@ -17,7 +17,7 @@ export const ProductListItemDescription = ({ product: { category, name, price } 
 			</div>
 
 			<div className="flex flex-row">
-				<p className="text-sm font-medium text-black">
+				<p data-testid="product-price" className="text-sm font-medium text-black">
 					<span className="sr-only">Cena: </span>
 					{formatMoney(price / 100)}
 				</p>

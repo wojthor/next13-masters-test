@@ -30,7 +30,12 @@ export default async function Cart() {
 						<tr key={item.product.id}>
 							<td>{item.product.name}</td>
 							<td className="px-4 text-center">
-								<ChangeQuantity quantity={item.quantity} id={CartId} productId={item.product.id} />
+								<ChangeQuantity
+									data-testid="quantity"
+									quantity={item.quantity}
+									id={CartId}
+									productId={item.product.id}
+								/>
 							</td>
 							<td>{formatMoney((item.product.price / 100) * item.quantity)} </td>
 							<td>

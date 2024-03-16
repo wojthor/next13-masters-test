@@ -334,7 +334,7 @@ export type ProductCategoryBySlugQueryVariables = Exact<{
 }>;
 
 
-export type ProductCategoryBySlugQuery = { category?: { name: string, description: string, products: Array<{ name: string, id: string, price: number, images: Array<{ url: string }> }> } | null };
+export type ProductCategoryBySlugQuery = { category?: { name: string, description: string, products: Array<{ name: string, id: string, price: number, images: Array<{ url: string }>, categories: Array<{ name: string }> }> } | null };
 
 export type ProductGetByCollectionQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -350,7 +350,9 @@ export type ProductGetByIdQueryVariables = Exact<{
 
 export type ProductGetByIdQuery = { product?: { id: string, name: string, description: string, price: number, images: Array<{ url: string }>, categories: Array<{ name: string }> } | null };
 
-export type ProductGetListQueryVariables = Exact<{ [key: string]: never; }>;
+export type ProductGetListQueryVariables = Exact<{
+  orderBy?: InputMaybe<ProductSortBy>;
+}>;
 
 
 export type ProductGetListQuery = { products: { data: Array<{ description: string, id: string, name: string, price: number, images: Array<{ url: string }>, categories: Array<{ name: string }> }> } };
@@ -489,6 +491,9 @@ export const ProductCategoryBySlugDocument = new TypedDocumentString(`
         url
       }
       price
+      categories {
+        name
+      }
     }
   }
 }
@@ -527,8 +532,8 @@ export const ProductGetByIdDocument = new TypedDocumentString(`
 }
     `) as unknown as TypedDocumentString<ProductGetByIdQuery, ProductGetByIdQueryVariables>;
 export const ProductGetListDocument = new TypedDocumentString(`
-    query ProductGetList {
-  products {
+    query ProductGetList($orderBy: ProductSortBy) {
+  products(orderBy: $orderBy) {
     data {
       description
       id
