@@ -1,25 +1,16 @@
-import { cookies } from "next/headers";
-
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { IoIosArrowBack } from "react-icons/io";
-import { revalidateTag } from "next/cache";
+
 import { executeGraphQL, getProductList } from "@/api/products";
 import { SuggestedProducts } from "@/ui/atoms/SuggestedProducts";
 import { ProductImage } from "@/ui/atoms/ProductImage";
-import {
-	CartFindOrCreateDocument,
-	ProductGetByIdDocument,
-	AddItemDocument,
-	GetReviewDocument,
-} from "@/gql/graphql";
+import { ProductGetByIdDocument, GetReviewDocument } from "@/gql/graphql";
 import { AddToCartButton } from "@/app/product/[productId]/AddToCartButton";
 import { formatMoney } from "@/app/utils/formatMoney";
 import { ReviewBlock } from "@/ui/atoms/ReviewBlock";
 import { RevievForm } from "@/ui/atoms/ReviewForm";
-import { getCart } from "@/api/cart";
-
-import { changeItemQuantity } from "@/app/cart/actions";
+import { addProductToCartAction } from "@/app/cart/actions";
 
 const back = (
 	<Link href="/products/1" className="flex flex-row font-semibold">
@@ -33,71 +24,6 @@ export const generateStaticParams = async () => {
 		productId: product.id,
 	}));
 };
-
-async function addProductToCartAction(_formData: FormData) {
-	"use server";
-	// Pobierz id produktu z formularza
-	const productId = _formData.get("productId");
-	if (!productId) {
-		console.error("productId is missing.");
-		return;
-	}
-
-	// Pobierz id koszyka z plików cookie
-	const cartIdFromCookies = cookies().get("cartId")?.value;
-	let CartId: string;
-	if (cartIdFromCookies) {
-		CartId = cartIdFromCookies;
-	} else {
-		// Jeśli koszyk nie istnieje, utwórz nowy
-		const response = await executeGraphQL({
-			query: CartFindOrCreateDocument,
-			variables: {
-				input: { items: [{ productId: productId as string }] },
-			},
-			next: {
-				tags: ["cart"],
-			},
-			cache: "no-store",
-		});
-		CartId = response.cartFindOrCreate.id;
-
-		// Ustaw wartość CartId w plikach cookie
-		cookies().set("cartId", CartId);
-	}
-
-	// Sprawdza czy produkt jest w koszyku i jeśli jest, zwiększa jego ilość o 1
-	// jeśli nie, dodaje go do koszyka
-	const searchCart = await getCart();
-	const findId = searchCart.cart?.items.map((item) => item.product.id);
-	const currentQuantity = searchCart.cart?.items.find(
-		(item) => item.product.id === productId,
-	)?.quantity;
-	const newQuantity = currentQuantity ? currentQuantity + 1 : 1;
-
-	if (findId && findId.includes(productId as string)) {
-		await changeItemQuantity(CartId, productId as string, newQuantity);
-	} else {
-		const addItemResponse = await executeGraphQL({
-			query: AddItemDocument,
-			variables: {
-				id: CartId,
-				input: {
-					item: {
-						productId: productId as string,
-					},
-				},
-			},
-			next: {
-				tags: ["cart"],
-			},
-			cache: "no-store",
-		});
-		revalidateTag("cart");
-
-		return addItemResponse;
-	}
-}
 
 export const generateMetadata = async ({ params }: { params: { productId: string } }) => {
 	const { product } = await executeGraphQL({

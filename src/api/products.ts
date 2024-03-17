@@ -2,6 +2,7 @@ import { type ProductItemType } from "@/ui/types";
 import {
 	ProductCategoryBySlugDocument,
 	ProductGetListDocument,
+	SearchDocument,
 	type ProductSortBy,
 	type TypedDocumentString,
 } from "@/gql/graphql";
@@ -20,11 +21,11 @@ export async function executeGraphQL<TResult, TVariables>({
 } & (TVariables extends { [key: string]: never }
 	? { variables?: never }
 	: { variables: TVariables })): Promise<TResult> {
-	if (!process.env.GRAPHQL_URL) {
+	if (!process.env.NEXT_PUBLIC_GRAPHQL_URL) {
 		throw TypeError("GRAPHQL_URL is not defined");
 	}
 
-	const res = await fetch(process.env.GRAPHQL_URL, {
+	const res = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
 		method: "POST",
 		body: JSON.stringify({
 			query,
@@ -99,4 +100,27 @@ export const getProductCategory = async ({
 	});
 
 	return r as ProductItemType[];
+};
+
+export const SearchProduct = async ({ query }: { query: string }) => {
+	const res = await executeGraphQL({
+		query: SearchDocument,
+		variables: {
+			search: query,
+		},
+		next: {
+			revalidate: 15,
+		},
+	});
+
+	return res.products.data.map((product) => {
+		return {
+			id: product.id,
+			name: product.name,
+			category: product.categories[0].name,
+			price: product.price,
+			coverImage: { src: product.images[0].url, alt: product.name },
+			longDescription: product.description,
+		};
+	});
 };
