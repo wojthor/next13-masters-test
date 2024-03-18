@@ -10,7 +10,7 @@ await index.setSettings({
 });
 
 export const SuggestedProducts = async () => {
-	const products = await getProductList();
+	const products = await getProductList({ sort: "DEFAULT", order: "DESC" });
 
 	return (
 		<div data-testid="related-products">
