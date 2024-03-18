@@ -12,7 +12,7 @@ export const size = {
 };
 
 export const generateStaticParams = async () => {
-	const products = await getProductList();
+	const products = await getProductList({ sort: "DEFAULT", order: "DESC" });
 	return products.map((product) => ({
 		productId: product.id,
 	}));
