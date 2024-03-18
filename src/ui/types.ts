@@ -5,4 +5,5 @@ export type ProductItemType = {
 	price: number;
 	coverImage: { src: string; alt: string };
 	longDescription: string;
+	rating?: number;
 };

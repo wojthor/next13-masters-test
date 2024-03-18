@@ -5,6 +5,7 @@ import {
 	SearchDocument,
 	type ProductSortBy,
 	type TypedDocumentString,
+	type SortDirection,
 } from "@/gql/graphql";
 
 export async function executeGraphQL<TResult, TVariables>({
@@ -51,12 +52,16 @@ export async function executeGraphQL<TResult, TVariables>({
 	return grapqlResponse.data;
 }
 
-export const getProductList = async (
-	{ sort }: { sort: ProductSortBy } = { sort: "DEFAULT" },
-): Promise<ProductItemType[]> => {
+export const getProductList = async ({
+	sort,
+	order,
+}: {
+	sort: ProductSortBy;
+	order: SortDirection;
+}): Promise<ProductItemType[]> => {
 	const grapqlResponse = await executeGraphQL({
 		query: ProductGetListDocument,
-		variables: { orderBy: sort },
+		variables: { orderBy: sort, order: order },
 		next: {
 			revalidate: 15,
 		},
@@ -70,6 +75,7 @@ export const getProductList = async (
 			price: product.price,
 			coverImage: { src: product.images[0].url, alt: product.name },
 			longDescription: product.description,
+			rating: product.rating as number,
 		};
 	});
 };

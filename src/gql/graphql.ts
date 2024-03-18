@@ -352,10 +352,11 @@ export type ProductGetByIdQuery = { product?: { id: string, name: string, descri
 
 export type ProductGetListQueryVariables = Exact<{
   orderBy?: InputMaybe<ProductSortBy>;
+  order?: InputMaybe<SortDirection>;
 }>;
 
 
-export type ProductGetListQuery = { products: { data: Array<{ description: string, id: string, name: string, price: number, images: Array<{ url: string }>, categories: Array<{ name: string }> }> } };
+export type ProductGetListQuery = { products: { data: Array<{ description: string, id: string, name: string, price: number, rating?: number | null, images: Array<{ url: string }>, categories: Array<{ name: string }> }> } };
 
 export type RemoveItemFromCartMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -532,8 +533,8 @@ export const ProductGetByIdDocument = new TypedDocumentString(`
 }
     `) as unknown as TypedDocumentString<ProductGetByIdQuery, ProductGetByIdQueryVariables>;
 export const ProductGetListDocument = new TypedDocumentString(`
-    query ProductGetList($orderBy: ProductSortBy) {
-  products(orderBy: $orderBy) {
+    query ProductGetList($orderBy: ProductSortBy, $order: SortDirection) {
+  products(orderBy: $orderBy, order: $order) {
     data {
       description
       id
@@ -545,6 +546,7 @@ export const ProductGetListDocument = new TypedDocumentString(`
       categories {
         name
       }
+      rating
     }
   }
 }

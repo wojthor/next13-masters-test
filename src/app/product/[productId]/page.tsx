@@ -19,7 +19,7 @@ const back = (
 );
 
 export const generateStaticParams = async () => {
-	const products = await getProductList({ sort: "DEFAULT" });
+	const products = await getProductList({ sort: "DEFAULT", order: "ASC" });
 	return products.map((product) => ({
 		productId: product.id,
 	}));

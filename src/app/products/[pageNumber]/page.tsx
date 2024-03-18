@@ -1,6 +1,6 @@
 import { getProductList } from "@/api/products";
 import { calculateProductRange } from "@/app/utils/calculateProductRange";
-import { type ProductSortBy } from "@/gql/graphql";
+import { type SortDirection, type ProductSortBy } from "@/gql/graphql";
 import { SortingBox } from "@/ui/atoms/SortingBox";
 
 import { Pagination } from "@/ui/molecules/Pagination";
@@ -11,20 +11,32 @@ export default async function ProductsPage({
 	searchParams,
 }: {
 	params: { pageNumber: string };
-	searchParams: URLSearchParams;
+	searchParams: { [key: string]: string | undefined };
 }) {
-	let sortType = "DEFAULT";
+	//let sortType = "DEFAULT";
 
-	//@ts-expect-error "searchParams.sort" może być różnym typem niż oczekiwano
-
+	/*
 	if (searchParams.sort === "PRICE") {
 		sortType = "PRICE";
 		//@ts-expect-error "searchParams.sort" może być różnym typem niż oczekiwano
 	} else if (searchParams.sort === "RATING") {
 		sortType = "RATING";
 	}
+*/
 
-	const products = await getProductList({ sort: sortType as ProductSortBy });
+	const sortDirection = searchParams.sortOrder
+		? (searchParams.sortOrder.toUpperCase() as SortDirection)
+		: undefined;
+	console.log(sortDirection);
+
+	const sort = searchParams.sort ? (searchParams.sort.toUpperCase() as ProductSortBy) : undefined;
+	console.log(sort);
+
+	const products = await getProductList({
+		sort: sort as ProductSortBy,
+		order: sortDirection as SortDirection,
+	});
+
 	const productsInfo = products.length;
 	const [startIndex, endIndex] = calculateProductRange(parseInt(params.pageNumber, 10), 4);
 	const slicedProducts = products.slice(startIndex, endIndex);

@@ -1,5 +1,5 @@
-query ProductGetList($orderBy: ProductSortBy) {
-	products(orderBy: $orderBy) {
+query ProductGetList($orderBy: ProductSortBy, $order: SortDirection) {
+	products(orderBy: $orderBy, order: $order) {
 		data {
 			description
 			id
@@ -11,6 +11,7 @@ query ProductGetList($orderBy: ProductSortBy) {
 			categories {
 				name
 			}
+			rating
 		}
 	}
 }

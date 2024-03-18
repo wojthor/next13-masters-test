@@ -5,7 +5,10 @@ type Product = {
 	product: ProductItemType;
 };
 
-export const ProductListItemDescription = ({ product: { category, name, price } }: Product) => {
+export const ProductListItemDescription = ({
+	product: { category, name, price, rating },
+}: Product) => {
+	console.log(price);
 	return (
 		<div className="mt-2 flex justify-between">
 			<div>
@@ -16,10 +19,12 @@ export const ProductListItemDescription = ({ product: { category, name, price } 
 				</p>
 			</div>
 
-			<div className="flex flex-row">
+			<div className="flex flex-col">
 				<p data-testid="product-price" className="text-sm font-medium text-black">
-					<span className="sr-only">Cena: </span>
 					{formatMoney(price / 100)}
+				</p>
+				<p data-testid="product-rating" className="z-50 text-sm font-medium text-black">
+					{`${rating?.toFixed(1)}/5`}
 				</p>
 			</div>
 		</div>
