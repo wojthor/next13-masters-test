@@ -128,6 +128,7 @@ export const SearchProduct = async ({ query }: { query: string }) => {
 			price: product.price,
 			coverImage: { src: product.images[0].url, alt: product.name },
 			longDescription: product.description,
+			rating: product.rating as number,
 		};
 	});
 };

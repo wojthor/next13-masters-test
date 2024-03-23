@@ -83,7 +83,7 @@ export default function SearchPage() {
 
 	return (
 		<>
-			<div className="flex flex-grow flex-col gap-5">
+			<div className="bg-gray-100">
 				<div className=" text-xl font-bold text-black">
 					<div className="mx-auto max-w-7xl px-8">
 						<div className="mx-auto py-8">
@@ -93,10 +93,10 @@ export default function SearchPage() {
 						</div>
 					</div>
 				</div>
-				<div>
-					<ProductList products={products} />
-				</div>
 			</div>
+			<section className="sm:py-18 mx-auto flex w-full max-w-2xl flex-grow flex-col px-8 py-12 sm:px-6 lg:max-w-7xl">
+				<ProductList products={products} />
+			</section>
 		</>
 	);
 }

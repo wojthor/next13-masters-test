@@ -11,6 +11,7 @@ query Search($search: String) {
 				name
 			}
 			price
+			rating
 		}
 	}
 }

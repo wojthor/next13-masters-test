@@ -371,7 +371,7 @@ export type SearchQueryVariables = Exact<{
 }>;
 
 
-export type SearchQuery = { products: { data: Array<{ name: string, id: string, description: string, price: number, images: Array<{ url: string }>, categories: Array<{ name: string }> }> } };
+export type SearchQuery = { products: { data: Array<{ name: string, id: string, description: string, price: number, rating?: number | null, images: Array<{ url: string }>, categories: Array<{ name: string }> }> } };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -583,6 +583,7 @@ export const SearchDocument = new TypedDocumentString(`
         name
       }
       price
+      rating
     }
   }
 }
