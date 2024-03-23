@@ -102,6 +102,7 @@ export const getProductCategory = async ({
 			category: product.categories[0].name,
 			price: product.price,
 			coverImage: { src: product.images[0].url, alt: product.name },
+			rating: product.rating as number,
 		};
 	});
 

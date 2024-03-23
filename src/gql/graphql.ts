@@ -334,14 +334,14 @@ export type ProductCategoryBySlugQueryVariables = Exact<{
 }>;
 
 
-export type ProductCategoryBySlugQuery = { category?: { name: string, description: string, products: Array<{ name: string, id: string, price: number, images: Array<{ url: string }>, categories: Array<{ name: string }> }> } | null };
+export type ProductCategoryBySlugQuery = { category?: { name: string, description: string, products: Array<{ name: string, id: string, price: number, rating?: number | null, images: Array<{ url: string }>, categories: Array<{ name: string }> }> } | null };
 
 export type ProductGetByCollectionQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
 
 
-export type ProductGetByCollectionQuery = { collection?: { description: string, name: string, products: Array<{ id: string, name: string, description: string, price: number, images: Array<{ url: string }> }> } | null };
+export type ProductGetByCollectionQuery = { collection?: { description: string, name: string, products: Array<{ id: string, name: string, description: string, price: number, rating?: number | null, images: Array<{ url: string }>, categories: Array<{ name: string }> }> } | null };
 
 export type ProductGetByIdQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -495,6 +495,7 @@ export const ProductCategoryBySlugDocument = new TypedDocumentString(`
       categories {
         name
       }
+      rating
     }
   }
 }
@@ -511,6 +512,10 @@ export const ProductGetByCollectionDocument = new TypedDocumentString(`
       price
       images {
         url
+      }
+      rating
+      categories {
+        name
       }
     }
   }

@@ -42,10 +42,10 @@ export default async function CategoryPage({
 					</div>
 				</div>
 			</div>
-			<div className="text-black">
+			<section className="sm:py-18 mx-auto flex w-full max-w-2xl flex-grow flex-col px-8 py-12 sm:px-6 lg:max-w-7xl">
 				<ProductList products={slicedProducts} />
 				<Pagination params={params} productsInfo={products.length} />{" "}
-			</div>
+			</section>
 		</>
 	);
 }

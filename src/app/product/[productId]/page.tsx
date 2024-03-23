@@ -63,7 +63,7 @@ export default async function SingleProductPage({ params }: { params: { productI
 
 	return (
 		<>
-			<div className="flex flex-col gap-12">
+			<div className="mx-auto grid max-w-7xl gap-10 p-8">
 				<p className="flex flex-row text-sm uppercase  text-gray-500">
 					{back} / {product.categories[0].name} / {product.name}
 				</p>

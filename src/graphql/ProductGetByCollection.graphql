@@ -10,6 +10,10 @@ query ProductGetByCollection($slug: String!) {
 			images {
 				url
 			}
+			rating
+			categories {
+				name
+			}
 		}
 	}
 }

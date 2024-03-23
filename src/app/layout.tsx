@@ -20,13 +20,11 @@ export default function RootLayout({
 	return (
 		<html lang="pl">
 			<body className={inter.className}>
-				<div className="mx-auto max-w-md px-12 sm:max-w-2xl  md:max-w-4xl lg:max-w-7xl">
+				<header className="sticky top-0 z-40 border-b bg-white ">
 					<Navbar />
-				</div>
+				</header>
 
-				<section className="mx-auto max-w-md p-12  sm:max-w-2xl  md:max-w-4xl lg:max-w-7xl">
-					{children}
-				</section>
+				<div className="flex flex-grow flex-col">{children}</div>
 
 				<footer className="text-center text-sm text-gray-500">
 					<p>

@@ -24,9 +24,11 @@ export const ActiveLink = ({
 	partialMatch = false,
 }: ActiveLinkProps) => {
 	const pathname = usePathname();
-	const isActive = partialMatch
-		? pathname === href && (!exact || pathname === href)
-		: pathname === href;
+	const isActive = exact
+		? pathname === href
+		: partialMatch
+			? pathname.startsWith(href)
+			: pathname.includes(href);
 	return (
 		<Link
 			href={href}

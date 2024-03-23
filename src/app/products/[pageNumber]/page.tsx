@@ -43,11 +43,13 @@ export default async function ProductsPage({
 
 	return (
 		<div className="flex flex-col  gap-5 text-black">
-			<div className="flex justify-end">
-				<SortingBox />
-			</div>
-			<ProductList products={slicedProducts} />
-			<Pagination params={params} productsInfo={productsInfo} />
+			<section className="sm:py-18 mx-auto flex w-full max-w-2xl flex-grow flex-col gap-5 px-8 py-12 sm:px-6 lg:max-w-7xl">
+				<div className="flex justify-end">
+					<SortingBox />
+				</div>
+				<ProductList products={slicedProducts} />
+				<Pagination params={params} productsInfo={productsInfo} />
+			</section>
 		</div>
 	);
 }

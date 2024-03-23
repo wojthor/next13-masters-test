@@ -21,8 +21,8 @@ const documents = {
     "query GetCartByID($id: ID!) {\n  cart(id: $id) {\n    items {\n      product {\n        id\n        name\n        price\n        categories {\n          name\n        }\n        images {\n          url\n        }\n      }\n      quantity\n    }\n  }\n}": types.GetCartByIdDocument,
     "query GetCollection {\n  collections {\n    data {\n      name\n      slug\n    }\n  }\n}": types.GetCollectionDocument,
     "query GetReview($id: ID!) {\n  product(id: $id) {\n    reviews {\n      author\n      description\n      email\n      title\n      createdAt\n      rating\n    }\n  }\n}": types.GetReviewDocument,
-    "query ProductCategoryBySlug($slug: String) {\n  category(slug: $slug) {\n    name\n    description\n    products {\n      name\n      id\n      images {\n        url\n      }\n      price\n      categories {\n        name\n      }\n    }\n  }\n}": types.ProductCategoryBySlugDocument,
-    "query ProductGetByCollection($slug: String!) {\n  collection(slug: $slug) {\n    description\n    name\n    products {\n      id\n      name\n      description\n      price\n      images {\n        url\n      }\n    }\n  }\n}": types.ProductGetByCollectionDocument,
+    "query ProductCategoryBySlug($slug: String) {\n  category(slug: $slug) {\n    name\n    description\n    products {\n      name\n      id\n      images {\n        url\n      }\n      price\n      categories {\n        name\n      }\n      rating\n    }\n  }\n}": types.ProductCategoryBySlugDocument,
+    "query ProductGetByCollection($slug: String!) {\n  collection(slug: $slug) {\n    description\n    name\n    products {\n      id\n      name\n      description\n      price\n      images {\n        url\n      }\n      rating\n      categories {\n        name\n      }\n    }\n  }\n}": types.ProductGetByCollectionDocument,
     "query ProductGetById($id: ID!) {\n  product(id: $id) {\n    id\n    name\n    description\n    images {\n      url\n    }\n    price\n    categories {\n      name\n    }\n  }\n}": types.ProductGetByIdDocument,
     "query ProductGetList($orderBy: ProductSortBy, $order: SortDirection) {\n  products(orderBy: $orderBy, order: $order) {\n    data {\n      description\n      id\n      name\n      price\n      images {\n        url\n      }\n      categories {\n        name\n      }\n      rating\n    }\n  }\n}": types.ProductGetListDocument,
     "mutation RemoveItemFromCart($id: ID!, $productId: ID!) {\n  cartRemoveItem(id: $id, productId: $productId) {\n    id\n    items {\n      product {\n        name\n      }\n      quantity\n    }\n  }\n}": types.RemoveItemFromCartDocument,
@@ -60,11 +60,11 @@ export function graphql(source: "query GetReview($id: ID!) {\n  product(id: $id)
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query ProductCategoryBySlug($slug: String) {\n  category(slug: $slug) {\n    name\n    description\n    products {\n      name\n      id\n      images {\n        url\n      }\n      price\n      categories {\n        name\n      }\n    }\n  }\n}"): typeof import('./graphql').ProductCategoryBySlugDocument;
+export function graphql(source: "query ProductCategoryBySlug($slug: String) {\n  category(slug: $slug) {\n    name\n    description\n    products {\n      name\n      id\n      images {\n        url\n      }\n      price\n      categories {\n        name\n      }\n      rating\n    }\n  }\n}"): typeof import('./graphql').ProductCategoryBySlugDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query ProductGetByCollection($slug: String!) {\n  collection(slug: $slug) {\n    description\n    name\n    products {\n      id\n      name\n      description\n      price\n      images {\n        url\n      }\n    }\n  }\n}"): typeof import('./graphql').ProductGetByCollectionDocument;
+export function graphql(source: "query ProductGetByCollection($slug: String!) {\n  collection(slug: $slug) {\n    description\n    name\n    products {\n      id\n      name\n      description\n      price\n      images {\n        url\n      }\n      rating\n      categories {\n        name\n      }\n    }\n  }\n}"): typeof import('./graphql').ProductGetByCollectionDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
