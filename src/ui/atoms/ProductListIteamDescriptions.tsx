@@ -10,7 +10,6 @@ type Product = {
 export const ProductListItemDescription = ({
 	product: { category, name, price, rating },
 }: Product) => {
-	console.log(price);
 	return (
 		<div className="mt-2">
 			<div className="flex flex-row justify-between">

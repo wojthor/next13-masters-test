@@ -12,18 +12,20 @@ export const RevievForm = ({ productId }: { productId: string }) => {
 	const [email, setEmail] = useState("");
 	const [rating, setRating] = useState(0);
 
-	console.log(productId);
-
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		e.stopPropagation();
 	};
 
 	return (
-		<form data-testid="add-review-form" onSubmit={handleSubmit} className="flex w-1/3">
-			<div className="space-y-12">
+		<div className="lg:col-span-4">
+			<form
+				data-testid="add-review-form"
+				onSubmit={handleSubmit}
+				className="mt-2 flex flex-col gap-y-2"
+			>
 				<div className=" border-gray-900/10 pb-12">
-					<h2 className="text-2xl font-semibold leading-7 text-gray-900">Recenzje klientów</h2>
+					<h2 className="text-2xl font-bold tracking-tight text-gray-900">Recenzje klientów</h2>
 					<p className="mt-1 text-sm leading-6 text-gray-600">
 						Jeśli korzystałeś z tego produktu, podziel się swoimi myślami z innymi klientami.
 					</p>
@@ -108,8 +110,6 @@ export const RevievForm = ({ productId }: { productId: string }) => {
 					</div>
 					<button
 						onClick={async () => {
-							console.log(productId);
-
 							setDescription(description);
 							setEmail(email);
 							setAuthor(author);
@@ -128,7 +128,7 @@ export const RevievForm = ({ productId }: { productId: string }) => {
 						Zatwierdź recenzje
 					</button>
 				</div>
-			</div>
-		</form>
+			</form>
+		</div>
 	);
 };

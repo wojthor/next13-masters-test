@@ -27,10 +27,8 @@ export default async function ProductsPage({
 	const sortDirection = searchParams.sortOrder
 		? (searchParams.sortOrder.toUpperCase() as SortDirection)
 		: undefined;
-	console.log(sortDirection);
 
 	const sort = searchParams.sort ? (searchParams.sort.toUpperCase() as ProductSortBy) : undefined;
-	console.log(sort);
 
 	const products = await getProductList({
 		sort: sort as ProductSortBy,

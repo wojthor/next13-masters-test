@@ -14,7 +14,7 @@ export const SuggestedProducts = async () => {
 
 	return (
 		<div data-testid="related-products">
-			<ProductList products={products.slice(-4)} />;
+			<ProductList products={products.slice(-4)} />
 		</div>
 	);
 };

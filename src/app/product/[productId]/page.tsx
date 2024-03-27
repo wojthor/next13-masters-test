@@ -63,11 +63,11 @@ export default async function SingleProductPage({ params }: { params: { productI
 
 	return (
 		<>
-			<div className="mx-auto grid max-w-7xl gap-10 p-8">
+			<section className="mx-auto grid max-w-7xl gap-10 p-8">
 				<p className="flex flex-row text-sm uppercase  text-gray-500">
 					{back} / {product.categories[0].name} / {product.name}
 				</p>
-				<article className=" flex flex-row gap-20">
+				<article className="grid grid-cols-1 gap-10 sm:grid-cols-2">
 					<div className=" basis-1/2">
 						<ProductImage src={product.images[0].url} alt={product.name} />
 					</div>
@@ -94,10 +94,10 @@ export default async function SingleProductPage({ params }: { params: { productI
 					</div>
 				</aside>
 
-				<div className="flex flex-row gap-12">
+				<div className="mx-auto max-w-2xl lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-x-8 lg:py-16">
 					<RevievForm productId={productId} /> <ReviewBlock review={review} />
 				</div>
-			</div>
+			</section>
 		</>
 	);
 }
