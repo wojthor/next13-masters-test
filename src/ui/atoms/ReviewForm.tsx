@@ -1,134 +1,125 @@
 "use client";
-import Rating from "@mui/material/Rating";
-import Stack from "@mui/material/Stack";
+
 import { useState } from "react";
+import { useFormState } from "react-dom";
+import Rating from "@mui/material/Rating";
+import { addReviewAction, type AddReviewState } from "@/api/reviews";
 
-import { SendReview } from "@/app/cart/actions";
+const initialState: AddReviewState = { ok: false };
 
-export const RevievForm = ({ productId }: { productId: string }) => {
-	const [title, setTitle] = useState("");
-	const [description, setDescription] = useState("");
-	const [author, setAuthor] = useState("");
-	const [email, setEmail] = useState("");
+export function ReviewForm({
+	productId,
+	productSlug,
+}: {
+	productId: string;
+	productSlug: string;
+}) {
+	const [state, formAction] = useFormState(addReviewAction, initialState);
 	const [rating, setRating] = useState(0);
-
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		e.stopPropagation();
-	};
 
 	return (
 		<div className="lg:col-span-4">
 			<form
 				data-testid="add-review-form"
-				onSubmit={handleSubmit}
-				className="mt-2 flex flex-col gap-y-2"
+				action={formAction}
+				className="mt-2 flex flex-col gap-y-4"
 			>
-				<div className=" border-gray-900/10 pb-12">
-					<h2 className="text-2xl font-bold tracking-tight text-gray-900">Recenzje klientów</h2>
-					<p className="mt-1 text-sm leading-6 text-gray-600">
-						Jeśli korzystałeś z tego produktu, podziel się swoimi myślami z innymi klientami.
-					</p>
+				<input type="hidden" name="productId" value={productId} />
+				<input type="hidden" name="productSlug" value={productSlug} />
 
-					<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
-						<div className="sm:col-span-4">
-							<p className="block text-sm font-medium leading-6 text-gray-900">Tytuł recenzji</p>
-							<div className="mt-2">
-								<div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-									<input
-										name="headline"
-										value={title}
-										onChange={(e) => setTitle(e.target.value)}
-										className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-									/>
-								</div>
-							</div>
-						</div>
+				<h2 className="text-2xl font-semibold tracking-tight text-neutral-900">
+					Recenzje klientów
+				</h2>
+				<p className="text-sm leading-6 text-neutral-600">
+					Jeśli korzystałeś z tego produktu, podziel się swoimi myślami z innymi klientami.
+				</p>
 
-						<div className="col-span-full">
-							<p className="block text-sm font-medium leading-6 text-gray-900">Opis</p>
-							<div className="mt-2">
-								<textarea
-									id="description"
-									name="content"
-									rows={3}
-									className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-									value={description}
-									onChange={(e) => setDescription(e.target.value)}
-								/>
-							</div>
-						</div>
-						<div className="sm:col-span-4">
-							<Stack spacing={1}>
-								<Rating
-									name="rating"
-									defaultValue={0}
-									value={rating}
-									onChange={(event, newValue) => {
-										if (newValue) {
-											setRating(newValue);
-										}
-									}}
-									precision={1}
-									readOnly={false}
-								/>
-							</Stack>
-						</div>
-
-						<div className="sm:col-span-4">
-							<p className="block text-sm font-medium leading-6 text-gray-900">Autor</p>
-							<div className="mt-2">
-								<div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-									<input
-										type="text"
-										name="name"
-										id="username"
-										autoComplete="username"
-										value={author}
-										onChange={(e) => setAuthor(e.target.value)}
-										className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-									/>
-								</div>
-							</div>
-						</div>
-						<div className="sm:col-span-4">
-							<p className="block text-sm font-medium leading-6 text-gray-900">Email</p>
-							<div className="mt-2">
-								<div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-									<input
-										type="email"
-										name="email"
-										id="email"
-										autoComplete="email"
-										value={email}
-										onChange={(e) => setEmail(e.target.value)}
-										className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-									/>
-								</div>
-							</div>
-						</div>
+				<div className="grid grid-cols-1 gap-4 sm:grid-cols-6">
+					<div className="sm:col-span-4">
+						<label htmlFor="author" className="block text-sm font-medium text-neutral-900">
+							Imię
+						</label>
+						<input
+							id="author"
+							name="author"
+							type="text"
+							required
+							className="mt-1 block w-full rounded-xl border border-neutral-200 px-3 py-2.5 text-sm focus:border-neutral-400 focus:outline-none"
+							placeholder="Twoje imię"
+						/>
 					</div>
-					<button
-						onClick={async () => {
-							setDescription(description);
-							setEmail(email);
-							setAuthor(author);
-							setRating(rating);
-							setTitle(title);
-							await SendReview(productId, title, description, author, email, rating);
-							window.location.reload();
-							setDescription("");
-							setEmail("");
-							setAuthor("");
-							setRating(0);
-							setTitle(" ");
-						}}
-						className="mt-6 inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-8 py-2 text-sm font-medium text-gray-50 hover:bg-gray-700 focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-					>
-						Zatwierdź recenzje
-					</button>
+
+					<div className="sm:col-span-4">
+						<label htmlFor="title" className="block text-sm font-medium text-neutral-900">
+							Tytuł
+						</label>
+						<input
+							id="title"
+							name="title"
+							type="text"
+							required
+							className="mt-1 block w-full rounded-xl border border-neutral-200 px-3 py-2.5 text-sm focus:border-neutral-400 focus:outline-none"
+							placeholder="Tytuł recenzji"
+						/>
+					</div>
+
+					<div className="sm:col-span-4">
+						<label htmlFor="email" className="block text-sm font-medium text-neutral-900">
+							E-mail
+						</label>
+						<input
+							id="email"
+							name="email"
+							type="email"
+							required
+							className="mt-1 block w-full rounded-xl border border-neutral-200 px-3 py-2.5 text-sm focus:border-neutral-400 focus:outline-none"
+							placeholder="twoj@email.pl"
+						/>
+					</div>
+
+					<div className="col-span-full">
+						<label htmlFor="content" className="block text-sm font-medium text-neutral-900">
+							Treść
+						</label>
+						<textarea
+							id="content"
+							name="content"
+							rows={4}
+							required
+							className="mt-1 block w-full rounded-xl border border-neutral-200 px-3 py-2.5 text-sm focus:border-neutral-400 focus:outline-none"
+							placeholder="Opis doświadczenia z produktem"
+						/>
+					</div>
+
+					<div className="sm:col-span-4">
+						<label className="block text-sm font-medium text-neutral-900">Ocena (1–5)</label>
+						<input type="hidden" name="rating" value={rating} readOnly aria-hidden />
+						<Rating
+							max={5}
+							precision={1}
+							value={rating}
+							onChange={(_e, newValue) => setRating(newValue ?? 0)}
+							className="mt-1"
+						/>
+					</div>
 				</div>
+
+				{state.message && (
+					<p
+						className={`text-sm ${state.ok ? "text-green-600" : "text-red-600"}`}
+						role="alert"
+					>
+						{state.message}
+					</p>
+				)}
+
+				<button
+					type="submit"
+					className="inline-flex w-full items-center justify-center rounded-full bg-neutral-900 px-6 py-3.5 text-sm font-medium text-white hover:bg-neutral-800 focus:outline-none"
+				>
+					Zatwierdź recenzję
+				</button>
 			</form>
 		</div>
 	);
-};
+}

@@ -1,8 +1,6 @@
 import { getProductList } from "@/api/products";
 import { calculateProductRange } from "@/app/utils/calculateProductRange";
-import { type SortDirection, type ProductSortBy } from "@/gql/graphql";
 import { SortingBox } from "@/ui/atoms/SortingBox";
-
 import { Pagination } from "@/ui/molecules/Pagination";
 import { ProductList } from "@/ui/organism/ProductList";
 
@@ -13,26 +11,14 @@ export default async function ProductsPage({
 	params: { pageNumber: string };
 	searchParams: { [key: string]: string | undefined };
 }) {
-	//let sortType = "DEFAULT";
-
-	/*
-	if (searchParams.sort === "PRICE") {
-		sortType = "PRICE";
-		//@ts-expect-error "searchParams.sort" może być różnym typem niż oczekiwano
-	} else if (searchParams.sort === "RATING") {
-		sortType = "RATING";
-	}
-*/
-
 	const sortDirection = searchParams.sortOrder
-		? (searchParams.sortOrder.toUpperCase() as SortDirection)
+		? searchParams.sortOrder.toUpperCase()
 		: undefined;
-
-	const sort = searchParams.sort ? (searchParams.sort.toUpperCase() as ProductSortBy) : undefined;
+	const sort = searchParams.sort ? searchParams.sort.toUpperCase() : undefined;
 
 	const products = await getProductList({
-		sort: sort as ProductSortBy,
-		order: sortDirection as SortDirection,
+		sort,
+		order: sortDirection,
 	});
 
 	const productsInfo = products.length;
@@ -40,14 +26,17 @@ export default async function ProductsPage({
 	const slicedProducts = products.slice(startIndex, endIndex);
 
 	return (
-		<div className="flex flex-col  gap-5 text-black">
-			<section className="sm:py-18 mx-auto flex w-full max-w-2xl flex-grow flex-col gap-5 px-8 py-12 sm:px-6 lg:max-w-7xl">
-				<div className="flex justify-end">
-					<SortingBox />
-				</div>
-				<ProductList products={slicedProducts} />
+		<div className="mx-auto w-full max-w-7xl flex-1 px-6 py-12 lg:px-8">
+			<div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+				<h1 className="text-2xl font-semibold tracking-tight text-neutral-900">
+					Wszystkie produkty
+				</h1>
+				<SortingBox />
+			</div>
+			<ProductList products={slicedProducts} />
+			<div className="mt-12">
 				<Pagination params={params} productsInfo={productsInfo} />
-			</section>
+			</div>
 		</div>
 	);
 }

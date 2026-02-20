@@ -1,5 +1,0 @@
-mutation CartFindOrCreate($input: MutationCartFindOrCreateInput!) {
-	cartFindOrCreate(input: $input) {
-		id
-	}
-}

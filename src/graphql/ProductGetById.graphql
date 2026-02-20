@@ -1,6 +1,7 @@
 query ProductGetById($id: ID!) {
-	product(id: $id) {
+	product(where: { id: $id }) {
 		id
+		slug
 		name
 		description
 		images {

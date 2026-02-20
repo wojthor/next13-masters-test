@@ -1,12 +1,12 @@
 query GetReview($id: ID!) {
-	product(id: $id) {
+	product(where: { id: $id }) {
 		reviews {
 			author
+			title
 			description
 			email
-			title
-			createdAt
 			rating
+			createdAt
 		}
 	}
 }

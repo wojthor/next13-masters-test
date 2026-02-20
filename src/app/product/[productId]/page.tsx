@@ -2,100 +2,103 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { IoIosArrowBack } from "react-icons/io";
 
-import { executeGraphQL, getProductList } from "@/api/products";
+import { getProductById, getProductList, getProductReviews } from "@/api/products";
 import { SuggestedProducts } from "@/ui/atoms/SuggestedProducts";
 import { ProductImage } from "@/ui/atoms/ProductImage";
-import { ProductGetByIdDocument, GetReviewDocument } from "@/gql/graphql";
 import { AddToCartButton } from "@/app/product/[productId]/AddToCartButton";
 import { formatMoney } from "@/app/utils/formatMoney";
 import { ReviewBlock } from "@/ui/atoms/ReviewBlock";
-import { RevievForm } from "@/ui/atoms/ReviewForm";
-import { addProductToCartAction } from "@/app/cart/actions";
+import { ReviewForm } from "@/ui/atoms/ReviewForm";
 
 const back = (
-	<Link href="/products/1" className="flex flex-row font-semibold">
+	<Link
+		href="/products/1"
+		className="inline-flex items-center gap-1 text-sm font-medium text-neutral-500 transition hover:text-neutral-900"
+	>
 		<IoIosArrowBack className="size-5" /> Powrót
 	</Link>
 );
 
-//
 export const generateStaticParams = async () => {
-	const products = await getProductList({ sort: "DEFAULT", order: "DESC" });
+	const products = await getProductList();
 	return products.map((product) => ({
 		productId: product.id,
 	}));
 };
 
 export const generateMetadata = async ({ params }: { params: { productId: string } }) => {
-	const { product } = await executeGraphQL({
-		query: ProductGetByIdDocument,
-		variables: { id: params.productId },
-	});
-
+	const product = await getProductById(params.productId);
 	return {
 		title: product?.name,
-		description: product?.description,
+		description: product?.description ?? undefined,
 	};
 };
 
 export default async function SingleProductPage({ params }: { params: { productId: string } }) {
-	const { product } = await executeGraphQL({
-		query: ProductGetByIdDocument,
-		variables: { id: params.productId },
-		next: {
-			revalidate: 15,
-		},
-	});
-
-	const productId = params.productId;
+	const [product, reviewsData] = await Promise.all([
+		getProductById(params.productId),
+		getProductReviews(params.productId),
+	]);
 
 	if (!product) {
 		notFound();
 	}
 
-	const review = await executeGraphQL({
-		query: GetReviewDocument,
-		variables: { id: params.productId },
-		next: {
-			revalidate: 15,
-		},
-	});
+	const categoryName = product.categories[0]?.name ?? "";
+	const imageUrl = product.images[0]?.url ?? "";
+	const price = product.price ?? 0;
 
 	return (
 		<>
-			<section className="mx-auto grid max-w-7xl gap-10 p-8">
-				<p className="flex flex-row text-sm uppercase  text-gray-500">
-					{back} / {product.categories[0].name} / {product.name}
+			<section className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
+				<p className="mb-8 flex flex-wrap items-center gap-1 text-sm text-neutral-500">
+					{back}
+					<span className="text-neutral-300">/</span>
+					<span>{categoryName}</span>
+					<span className="text-neutral-300">/</span>
+					<span className="text-neutral-900">{product.name}</span>
 				</p>
-				<article className="grid grid-cols-1 gap-10 sm:grid-cols-2">
-					<div className=" basis-1/2">
-						<ProductImage src={product.images[0].url} alt={product.name} />
+				<article className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
+					<div className="lg:sticky lg:top-24 lg:self-start">
+						<ProductImage src={imageUrl} alt={product.name} />
 					</div>
-
-					<div className="flex basis-1/2 flex-col justify-center gap-5">
-						<h1 className="text-6xl font-semibold text-black">{product.name}</h1>
-						<p className="font-base small-caps text-lg text-black">
-							{" "}
-							{formatMoney(product.price / 100)}
+					<div className="flex flex-col justify-center">
+						<h1 className="text-4xl font-semibold tracking-tight text-neutral-900 md:text-5xl">
+							{product.name}
+						</h1>
+						<p className="mt-3 text-2xl font-medium text-neutral-900">
+							{formatMoney(price / 100)}
 						</p>
-						<p className="text-m font-extralight text-black">{product.description}</p>
-						<form action={addProductToCartAction}>
-							<input type="text" name="productId" value={product.id} hidden />
-
-							<AddToCartButton />
-						</form>
+						<p className="mt-6 text-neutral-600 leading-relaxed">{product.description}</p>
+						<div className="mt-8">
+							<AddToCartButton
+								product={{
+									id: product.id,
+									name: product.name,
+									price: price,
+									images: product.images,
+									categoryName: categoryName || undefined,
+								}}
+							/>
+						</div>
 					</div>
 				</article>
 
-				<aside className="flex flex-row ">
-					<div className="flex flex-col gap-5 text-black">
-						<p className="font-semibold">Produkty, które mogą Ci się spodobać</p>
+				<aside className="mt-20 border-t border-neutral-200 pt-16">
+					<h2 className="text-2xl font-semibold tracking-tight text-neutral-900">
+						Produkty, które mogą Ci się spodobać
+					</h2>
+					<div className="mt-8">
 						<SuggestedProducts />
 					</div>
 				</aside>
 
-				<div className="mx-auto max-w-2xl lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-x-8 lg:py-16">
-					<RevievForm productId={productId} /> <ReviewBlock review={review} />
+				<div className="mx-auto mt-20 max-w-3xl border-t border-neutral-200 pt-16 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-x-8">
+					<ReviewForm
+						productId={params.productId}
+						productSlug={product.slug ?? params.productId}
+					/>
+					<ReviewBlock review={reviewsData} />
 				</div>
 			</section>
 		</>

@@ -83,7 +83,7 @@ export const SortingBox = () => {
 		<select
 			onChange={selectChangeHandler}
 			value={selectValue}
-			className="arrow-down-bg block w-48 cursor-pointer appearance-none rounded-md border-gray-300 px-2 py-1 text-sm font-light text-black shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 lg:mt-1"
+			className="arrow-down-bg block w-48 cursor-pointer appearance-none rounded-full border border-neutral-200 bg-neutral-50 px-4 py-2.5 text-sm font-medium text-neutral-900 focus:border-neutral-400 focus:outline-none"
 		>
 			<option disabled>Sort products</option>
 			<option data-testid="sort-by-rating" value="ratingDesc">

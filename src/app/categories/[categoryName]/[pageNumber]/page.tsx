@@ -16,11 +16,8 @@ export const generateStaticParams = async ({ params }: { params: { categoryName:
 
 export const generateMetadata = async ({ params }: { params: { categoryName: string } }) => {
 	const products = await getProductCategory({ params: { category: params.categoryName } });
-	const title = products.slice(0, 1);
-
-	return {
-		title: title[0].category,
-	};
+	const categoryName = products[0]?.category ?? params.categoryName;
+	return { title: categoryName };
 };
 
 export default async function CategoryPage({
@@ -31,21 +28,15 @@ export default async function CategoryPage({
 	const products = await getProductCategory({ params: { category: params.categoryName } });
 	const [startIndex, endIndex] = calculateProductRange(parseInt(params.pageNumber, 10), 4);
 	const slicedProducts = products.slice(startIndex, endIndex);
-	const title = products[0].category;
+	const title = products[0]?.category ?? params.categoryName;
 
 	return (
-		<>
-			<div className="gap-5 bg-gray-100">
-				<div className="mx-auto max-w-7xl px-8">
-					<div className="mx-auto py-8">
-						<h2 className="text-bold text-black"> {title}</h2>
-					</div>
-				</div>
+		<div className="mx-auto w-full max-w-7xl flex-1 px-6 py-12 lg:px-8">
+			<h1 className="mb-10 text-2xl font-semibold tracking-tight text-neutral-900">{title}</h1>
+			<ProductList products={slicedProducts} />
+			<div className="mt-12">
+				<Pagination params={params} productsInfo={products.length} />
 			</div>
-			<section className="sm:py-18 mx-auto flex w-full max-w-2xl flex-grow flex-col px-8 py-12 sm:px-6 lg:max-w-7xl">
-				<ProductList products={slicedProducts} />
-				<Pagination params={params} productsInfo={products.length} />{" "}
-			</section>
-		</>
+		</div>
 	);
 }

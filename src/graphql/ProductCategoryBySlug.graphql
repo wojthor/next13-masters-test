@@ -1,5 +1,5 @@
 query ProductCategoryBySlug($slug: String) {
-	category(slug: $slug) {
+	category(where: { slug: $slug }) {
 		name
 		description
 		products {

@@ -1,25 +1,29 @@
 import { type Route } from "next";
 
+import { getCategories } from "@/api/products";
 import { ActiveLink } from "@/ui/atoms/ActiveLink";
 
-const navLinks = [
+const staticLinks: { href: Route; label: string }[] = [
 	{ href: "/", label: "Home" },
-	{ href: "/products/1", label: "All" },
-
-	{ href: "/categories/t-shirts/1", label: "T-shirts" },
-	{ href: "/categories/hoodies/1", label: "Hoodies" },
-	{ href: "/categories/accessories/1", label: "Accessories" },
+	{ href: "/products/1", label: "Wszystkie" },
 ];
 
 export const Navigation = async () => {
+	const categories = await getCategories();
+	const categoryLinks = categories.map((cat) => ({
+		href: `/categories/${cat.slug}/1` as Route,
+		label: cat.name,
+	}));
+	const navLinks = [...staticLinks, ...categoryLinks];
+
 	return (
 		<>
 			{navLinks.map((link) => (
-				<li key={link.href} className="first:pl-4 last:pr-4 lg:px-0">
+				<li key={link.href + link.label}>
 					<ActiveLink
-						href={link.href as Route}
-						className="flex h-full w-full min-w-[3rem] items-center justify-center  px-1 pt-1 text-center text-sm font-medium text-slate-500 hover:border-gray-300 hover:text-slate-700"
-						activeClassName="flex h-full w-full min-w-[3rem] items-center justify-center border-b-2 border-blue-500 px-1 pt-1 text-center text-sm font-medium text-slate-500 hover:border-gray-300 hover:text-slate-700"
+						href={link.href}
+						className="text-sm font-medium text-neutral-500 transition hover:text-neutral-900"
+						activeClassName="text-neutral-900"
 						partialMatch
 						aria-current
 					>

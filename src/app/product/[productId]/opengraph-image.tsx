@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og";
-import { executeGraphQL, getProductList } from "@/api/products";
-import { ProductGetByIdDocument } from "@/gql/graphql";
+
+import { getProductById, getProductList } from "@/api/products";
 
 export const runtime = "edge";
 
@@ -12,7 +12,7 @@ export const size = {
 };
 
 export const generateStaticParams = async () => {
-	const products = await getProductList({ sort: "DEFAULT", order: "DESC" });
+	const products = await getProductList();
 	return products.map((product) => ({
 		productId: product.id,
 	}));
@@ -21,13 +21,7 @@ export const generateStaticParams = async () => {
 export const contentType = "image/png";
 
 export default async function og({ params }: { params: { productId: string } }) {
-	const { product } = await executeGraphQL({
-		query: ProductGetByIdDocument,
-		variables: { id: params.productId },
-		next: {
-			revalidate: 15,
-		},
-	});
+	const product = await getProductById(params.productId);
 
 	return new ImageResponse(
 		(
@@ -38,9 +32,11 @@ export default async function og({ params }: { params: { productId: string } }) 
 				}}
 			>
 				<p tw="font-sans uppercase m-0 p-0 text-[101px] leading-4 pt-10">{product?.name}</p>
-				<p tw="text-sm"> {product?.categories[0].name}</p>
+				<p tw="text-sm">{product?.categories[0]?.name}</p>
 				<p tw="m-0 mt-2 text-sm">{product?.description}</p>
-				<img tw="w-1/4" src={product?.images[0].url} alt={product?.name} />
+				{product?.images[0]?.url && (
+					<img tw="w-1/4" src={product.images[0].url} alt={product.name} />
+				)}
 			</div>
 		),
 	);

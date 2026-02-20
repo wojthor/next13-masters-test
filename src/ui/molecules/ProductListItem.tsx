@@ -9,9 +9,12 @@ type Product = {
 
 export const ProductListItem = ({ product }: Product) => {
 	return (
-		<li key={product.id}>
+		<li>
 			<article>
-				<Link href={`/product/${product.id}`}>
+				<Link
+					href={`/product/${product.id}`}
+					className="group block rounded-2xl transition hover:bg-neutral-50/80"
+				>
 					<ProductCoverImage src={product.coverImage.src} alt={product.coverImage.alt} />
 					<ProductListItemDescription product={product} />
 				</Link>

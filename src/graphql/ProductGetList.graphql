@@ -1,17 +1,15 @@
-query ProductGetList($orderBy: ProductSortBy, $order: SortDirection) {
-	products(orderBy: $orderBy, order: $order) {
-		data {
-			description
-			id
+query ProductGetList {
+	products {
+		id
+		name
+		description
+		price
+		rating
+		images {
+			url
+		}
+		categories {
 			name
-			price
-			images {
-				url
-			}
-			categories {
-				name
-			}
-			rating
 		}
 	}
 }

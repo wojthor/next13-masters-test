@@ -1,18 +1,20 @@
 mutation CreateReview(
 	$author: String!
+	$title: String!
 	$description: String!
 	$email: String!
-	$productId: ID!
-	$rating: Int!
-	$title: String!
+	$rating: Float!
+	$productSlug: String!
 ) {
-	reviewCreate(
-		author: $author
-		description: $description
-		email: $email
-		productId: $productId
-		rating: $rating
-		title: $title
+	createReview(
+		data: {
+			author: $author
+			title: $title
+			description: $description
+			email: $email
+			rating: $rating
+			products: { connect: { slug: $productSlug } }
+		}
 	) {
 		id
 	}

@@ -6,7 +6,7 @@ const nextConfig = {
 		typedRoutes: true,
 	},
 	images: {
-		domains: ["static-ourstore.hyperfunctor.com"],
+		domains: ["static-ourstore.hyperfunctor.com", "images.unsplash.com"],
 	},
 	redirects: async () => {
 		return [

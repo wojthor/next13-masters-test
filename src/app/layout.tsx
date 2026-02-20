@@ -3,11 +3,18 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import { Navbar } from "@/ui/organism/Navbar";
+import { Footer } from "@/ui/organism/Footer";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+	subsets: ["latin"],
+	display: "swap",
+	variable: "--font-sans",
+});
+
 
 export const metadata: Metadata = {
 	title: "Sklep Wojthora",
+	description: "Nowoczesny sklep internetowy",
 };
 
 export default function RootLayout({
@@ -18,22 +25,15 @@ export default function RootLayout({
 	modal: React.ReactNode;
 }>) {
 	return (
-		<html lang="pl">
-			<body className={inter.className}>
-				<header className="sticky top-0 z-40 border-b bg-white ">
+		<html lang="pl" className={inter.variable}>
+			<body className={`min-h-screen antialiased ${inter.className}`}>
+				<header className="sticky top-0 z-40 border-b border-neutral-200 bg-white/80 backdrop-blur-md">
 					<Navbar />
 				</header>
 
-				<div className="flex flex-grow flex-col">{children}</div>
+				<main className="flex flex-1 flex-col">{children}</main>
 
-				<footer className="text-center text-sm text-gray-500">
-					<p>
-						© {new Date().getFullYear()}{" "}
-						<a href="https://github.com/wojthor" className="text-gray-700">
-							Wojthor
-						</a>
-					</p>
-				</footer>
+				<Footer />
 				{modal}
 			</body>
 		</html>
