@@ -5,7 +5,7 @@ import { ActiveLink } from "@/ui/atoms/ActiveLink";
 
 const staticLinks: { href: Route; label: string }[] = [
 	{ href: "/", label: "Home" },
-	{ href: "/products/1", label: "Wszystkie" },
+	{ href: "/products/1" as Route, label: "Wszystkie" },
 ];
 
 export const Navigation = async () => {

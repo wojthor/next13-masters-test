@@ -1,0 +1,11 @@
+# mutation RemoveItemFromCart($id: ID!, $productId: ID!) {
+# 	cartRemoveItem(id: $id, productId: $productId) {
+# 		id
+# 		items {
+# 			product {
+# 				name
+# 			}
+# 			quantity
+# 		}
+# 	}
+# }

@@ -62,7 +62,7 @@ type ProductGetListQuery = {
 };
 
 const ProductGetListDocument = new TypedDocumentString(
-	`query ProductGetList { products { id name description price rating images { url } categories { name } } }`,
+	`query ProductGetList { products(first: 500) { id name description price rating images { url } categories { name } } }`,
 ) as unknown as TypedDocumentString<ProductGetListQuery, Record<string, never>>;
 
 function mapToProductItem(product: ProductGetListQuery["products"][number]): ProductItemType {
@@ -166,7 +166,7 @@ type ProductCategoryBySlugQuery = {
 };
 
 const ProductCategoryBySlugDocument = new TypedDocumentString(
-	`query ProductCategoryBySlug($slug: String) { category(where: { slug: $slug }) { name description products { id name price rating images { url } categories { name } } } }`,
+	`query ProductCategoryBySlug($slug: String) { category(where: { slug: $slug }) { name description products(first: 500) { id name price rating images { url } categories { name } } } }`,
 ) as unknown as TypedDocumentString<ProductCategoryBySlugQuery, ProductCategoryBySlugVariables>;
 
 type CategoryProduct = NonNullable<ProductCategoryBySlugQuery["category"]>["products"][number];

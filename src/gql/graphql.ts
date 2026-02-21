@@ -1,6 +1,7 @@
 /* eslint-disable */
+import type { DocumentTypeDecoration } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
+export type InputMaybe<T> = T | null | undefined;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
@@ -5403,6 +5404,61 @@ export type _SystemDateTimeFieldVariation =
   | 'combined'
   | 'localization';
 
+export type CreateReviewMutationVariables = Exact<{
+  author: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+  description: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  rating: Scalars['Float']['input'];
+  productSlug: Scalars['String']['input'];
+}>;
+
+
+export type CreateReviewMutation = { createReview?: { id: string } | null };
+
+export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCategoriesQuery = { categories: Array<{ name?: string | null, slug?: string | null }> };
+
+export type GetReviewQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetReviewQuery = { product?: { reviews: Array<{ author?: string | null, title?: string | null, description?: string | null, email?: string | null, rating?: number | null, createdAt: any }> } | null };
+
+export type ProductCategoryBySlugQueryVariables = Exact<{
+  slug?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type ProductCategoryBySlugQuery = { category?: { name?: string | null, description?: string | null, products: Array<{ name: string, id: string, price?: number | null, rating?: number | null, images: Array<{ url: string }>, categories: Array<{ name?: string | null }> }> } | null };
+
+export type ProductGetByIdQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type ProductGetByIdQuery = { product?: { id: string, slug?: string | null, name: string, description?: string | null, price?: number | null, images: Array<{ url: string }>, categories: Array<{ name?: string | null }> } | null };
+
+export type ProductGetListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProductGetListQuery = { products: Array<{ id: string, name: string, description?: string | null, price?: number | null, rating?: number | null, images: Array<{ url: string }>, categories: Array<{ name?: string | null }> }> };
+
+export type ReviewCreateMutationVariables = Exact<{
+  author: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+  description: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  rating: Scalars['Float']['input'];
+  productSlug: Scalars['String']['input'];
+}>;
+
+
+export type ReviewCreateMutation = { createReview?: { id: string } | null };
+
 export class TypedDocumentString<TResult, TVariables>
   extends String
   implements DocumentTypeDecoration<TResult, TVariables>
@@ -5421,3 +5477,98 @@ export class TypedDocumentString<TResult, TVariables>
     return this.value;
   }
 }
+
+export const CreateReviewDocument = new TypedDocumentString(`
+    mutation CreateReview($author: String!, $title: String!, $description: String!, $email: String!, $rating: Float!, $productSlug: String!) {
+  createReview(
+    data: {author: $author, title: $title, description: $description, email: $email, rating: $rating, products: {connect: {slug: $productSlug}}}
+  ) {
+    id
+  }
+}
+    `) as unknown as TypedDocumentString<CreateReviewMutation, CreateReviewMutationVariables>;
+export const GetCategoriesDocument = new TypedDocumentString(`
+    query GetCategories {
+  categories {
+    name
+    slug
+  }
+}
+    `) as unknown as TypedDocumentString<GetCategoriesQuery, GetCategoriesQueryVariables>;
+export const GetReviewDocument = new TypedDocumentString(`
+    query GetReview($id: ID!) {
+  product(where: {id: $id}) {
+    reviews {
+      author
+      title
+      description
+      email
+      rating
+      createdAt
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<GetReviewQuery, GetReviewQueryVariables>;
+export const ProductCategoryBySlugDocument = new TypedDocumentString(`
+    query ProductCategoryBySlug($slug: String) {
+  category(where: {slug: $slug}) {
+    name
+    description
+    products {
+      name
+      id
+      images {
+        url
+      }
+      price
+      categories {
+        name
+      }
+      rating
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<ProductCategoryBySlugQuery, ProductCategoryBySlugQueryVariables>;
+export const ProductGetByIdDocument = new TypedDocumentString(`
+    query ProductGetById($id: ID!) {
+  product(where: {id: $id}) {
+    id
+    slug
+    name
+    description
+    images {
+      url
+    }
+    price
+    categories {
+      name
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<ProductGetByIdQuery, ProductGetByIdQueryVariables>;
+export const ProductGetListDocument = new TypedDocumentString(`
+    query ProductGetList {
+  products {
+    id
+    name
+    description
+    price
+    rating
+    images {
+      url
+    }
+    categories {
+      name
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<ProductGetListQuery, ProductGetListQueryVariables>;
+export const ReviewCreateDocument = new TypedDocumentString(`
+    mutation ReviewCreate($author: String!, $title: String!, $description: String!, $email: String!, $rating: Float!, $productSlug: String!) {
+  createReview(
+    data: {author: $author, title: $title, description: $description, email: $email, rating: $rating, products: {connect: {slug: $productSlug}}}
+  ) {
+    id
+  }
+}
+    `) as unknown as TypedDocumentString<ReviewCreateMutation, ReviewCreateMutationVariables>;

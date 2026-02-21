@@ -14,28 +14,29 @@ export const generateStaticParams = async ({ params }: { params: { categoryName:
 };
 */
 
-export const generateMetadata = async ({ params }: { params: { categoryName: string } }) => {
-	const products = await getProductCategory({ params: { category: params.categoryName } });
-	const categoryName = products[0]?.category ?? params.categoryName;
-	return { title: categoryName };
+type CategoryPageParams = Promise<{ categoryName: string; pageNumber: string }> | { categoryName: string; pageNumber: string };
+
+export const generateMetadata = async ({ params }: { params: CategoryPageParams }) => {
+	const { categoryName } = await Promise.resolve(params);
+	const products = await getProductCategory({ params: { category: categoryName } });
+	const categoryNameFromProducts = products[0]?.category ?? categoryName;
+	return { title: categoryNameFromProducts };
 };
 
-export default async function CategoryPage({
-	params,
-}: {
-	params: { categoryName: string; pageNumber: string };
-}) {
-	const products = await getProductCategory({ params: { category: params.categoryName } });
-	const [startIndex, endIndex] = calculateProductRange(parseInt(params.pageNumber, 10), 4);
+export default async function CategoryPage({ params }: { params: CategoryPageParams }) {
+	const resolvedParams = await Promise.resolve(params);
+	const { categoryName, pageNumber } = resolvedParams;
+	const products = await getProductCategory({ params: { category: categoryName } });
+	const [startIndex, endIndex] = calculateProductRange(parseInt(pageNumber, 10), 4);
 	const slicedProducts = products.slice(startIndex, endIndex);
-	const title = products[0]?.category ?? params.categoryName;
+	const title = products[0]?.category ?? categoryName;
 
 	return (
 		<div className="mx-auto w-full max-w-7xl flex-1 px-6 py-12 lg:px-8">
 			<h1 className="mb-10 text-2xl font-semibold tracking-tight text-neutral-900">{title}</h1>
 			<ProductList products={slicedProducts} />
 			<div className="mt-12">
-				<Pagination params={params} productsInfo={products.length} />
+				<Pagination params={resolvedParams} productsInfo={products.length} />
 			</div>
 		</div>
 	);

@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { type Route } from "next";
 
-const legalLinks = [
-	{ href: "/regulamin", label: "Regulamin" },
-	{ href: "/polityka-prywatnosci", label: "Polityka prywatności" },
-	{ href: "/zwroty-reklamacje", label: "Zwroty i reklamacje" },
-	{ href: "/kontakt", label: "Kontakt" },
+const legalLinks: { href: Route; label: string }[] = [
+	{ href: "/regulamin" as Route, label: "Regulamin" },
+	{ href: "/polityka-prywatnosci" as Route, label: "Polityka prywatności" },
+	{ href: "/zwroty-reklamacje" as Route, label: "Zwroty i reklamacje" },
+	{ href: "/kontakt" as Route, label: "Kontakt" },
 ];
 
 export function Footer() {

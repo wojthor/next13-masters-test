@@ -1,9 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og";
 
-import { getProductById, getProductList } from "@/api/products";
-
-export const runtime = "edge";
+import { getProductById } from "@/api/products";
 
 export const alt = "next13 masters sklep";
 export const size = {
@@ -11,33 +9,30 @@ export const size = {
 	height: 630,
 };
 
-export const generateStaticParams = async () => {
-	const products = await getProductList();
-	return products.map((product) => ({
-		productId: product.id,
-	}));
-};
+// Dynamic so OG images are generated on-demand (avoids API rate limit at build time)
+export const dynamic = "force-dynamic";
 
 export const contentType = "image/png";
 
-export default async function og({ params }: { params: { productId: string } }) {
-	const product = await getProductById(params.productId);
+export default async function og({
+	params,
+}: {
+	params: Promise<{ productId: string }> | { productId: string };
+}) {
+	const resolvedParams = await Promise.resolve(params);
+	const product = await getProductById(resolvedParams.productId);
 
 	return new ImageResponse(
-		(
-			<div
-				tw="w-full text-white h-full flex flex-col items-center justify-center text-8xl "
-				style={{
-					background: "linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5))",
-				}}
-			>
-				<p tw="font-sans uppercase m-0 p-0 text-[101px] leading-4 pt-10">{product?.name}</p>
-				<p tw="text-sm">{product?.categories[0]?.name}</p>
-				<p tw="m-0 mt-2 text-sm">{product?.description}</p>
-				{product?.images[0]?.url && (
-					<img tw="w-1/4" src={product.images[0].url} alt={product.name} />
-				)}
-			</div>
-		),
+		<div
+			tw="w-full text-white h-full flex flex-col items-center justify-center text-8xl "
+			style={{
+				background: "linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5))",
+			}}
+		>
+			<p tw="font-sans uppercase m-0 p-0 text-[101px] leading-4 pt-10">{product?.name}</p>
+			<p tw="text-sm">{product?.categories[0]?.name}</p>
+			<p tw="m-0 mt-2 text-sm">{product?.description}</p>
+			{product?.images[0]?.url && <img tw="w-1/4" src={product.images[0].url} alt={product.name} />}
+		</div>,
 	);
 }

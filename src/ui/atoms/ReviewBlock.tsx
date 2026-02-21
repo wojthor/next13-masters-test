@@ -22,7 +22,7 @@ export const ReviewBlock = ({ review }: { review: GetReviewQuery }) => {
 								<Stack spacing={1}>
 									<Rating
 										name="size-small"
-										defaultValue={review.rating}
+										defaultValue={review.rating ?? 0}
 										size="small"
 										readOnly
 									/>

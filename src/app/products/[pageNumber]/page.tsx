@@ -4,13 +4,16 @@ import { SortingBox } from "@/ui/atoms/SortingBox";
 import { Pagination } from "@/ui/molecules/Pagination";
 import { ProductList } from "@/ui/organism/ProductList";
 
+type ProductsPageParams = Promise<{ pageNumber: string }> | { pageNumber: string };
+
 export default async function ProductsPage({
 	params,
 	searchParams,
 }: {
-	params: { pageNumber: string };
+	params: ProductsPageParams;
 	searchParams: { [key: string]: string | undefined };
 }) {
+	const resolvedParams = await Promise.resolve(params);
 	const sortDirection = searchParams.sortOrder
 		? searchParams.sortOrder.toUpperCase()
 		: undefined;
@@ -22,7 +25,7 @@ export default async function ProductsPage({
 	});
 
 	const productsInfo = products.length;
-	const [startIndex, endIndex] = calculateProductRange(parseInt(params.pageNumber, 10), 4);
+	const [startIndex, endIndex] = calculateProductRange(parseInt(resolvedParams.pageNumber, 10), 4);
 	const slicedProducts = products.slice(startIndex, endIndex);
 
 	return (
@@ -35,7 +38,7 @@ export default async function ProductsPage({
 			</div>
 			<ProductList products={slicedProducts} />
 			<div className="mt-12">
-				<Pagination params={params} productsInfo={productsInfo} />
+				<Pagination params={resolvedParams} productsInfo={productsInfo} />
 			</div>
 		</div>
 	);

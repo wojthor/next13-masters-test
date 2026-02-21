@@ -1,0 +1,8 @@
+# query GetCollection {
+# 	collections {
+# 		data {
+# 			name
+# 			slug
+# 		}
+# 	}
+# }

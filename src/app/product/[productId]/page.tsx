@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { IoIosArrowBack } from "react-icons/io";
 
-import { getProductById, getProductList, getProductReviews } from "@/api/products";
+import { getProductById, getProductReviews } from "@/api/products";
 import { SuggestedProducts } from "@/ui/atoms/SuggestedProducts";
 import { ProductImage } from "@/ui/atoms/ProductImage";
 import { AddToCartButton } from "@/app/product/[productId]/AddToCartButton";
@@ -19,25 +19,25 @@ const back = (
 	</Link>
 );
 
-export const generateStaticParams = async () => {
-	const products = await getProductList();
-	return products.map((product) => ({
-		productId: product.id,
-	}));
-};
+// Dynamic to avoid API rate limit during build (Hygraph read limit)
+export const dynamic = "force-dynamic";
 
-export const generateMetadata = async ({ params }: { params: { productId: string } }) => {
-	const product = await getProductById(params.productId);
+type ProductPageParams = Promise<{ productId: string }> | { productId: string };
+
+export const generateMetadata = async ({ params }: { params: ProductPageParams }) => {
+	const { productId } = await Promise.resolve(params);
+	const product = await getProductById(productId);
 	return {
 		title: product?.name,
 		description: product?.description ?? undefined,
 	};
 };
 
-export default async function SingleProductPage({ params }: { params: { productId: string } }) {
+export default async function SingleProductPage({ params }: { params: ProductPageParams }) {
+	const { productId } = await Promise.resolve(params);
 	const [product, reviewsData] = await Promise.all([
-		getProductById(params.productId),
-		getProductReviews(params.productId),
+		getProductById(productId),
+		getProductReviews(productId),
 	]);
 
 	if (!product) {
@@ -95,8 +95,8 @@ export default async function SingleProductPage({ params }: { params: { productI
 
 				<div className="mx-auto mt-20 max-w-3xl border-t border-neutral-200 pt-16 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-x-8">
 					<ReviewForm
-						productId={params.productId}
-						productSlug={product.slug ?? params.productId}
+						productId={productId}
+						productSlug={product.slug ?? productId}
 					/>
 					<ReviewBlock review={reviewsData} />
 				</div>

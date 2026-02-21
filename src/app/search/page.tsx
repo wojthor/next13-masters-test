@@ -51,13 +51,13 @@ export default async function SearchPage() {
 */
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import { ProductList } from "@/ui/organism/ProductList";
 import { type ProductItemType } from "@/ui/types";
 import { SearchProduct } from "@/api/products";
 
-export default function SearchPage() {
+function SearchContent() {
 	const searchParams = useSearchParams();
 	const search = searchParams.get("query");
 	const [query, setQuery] = useState<string | null>(null);
@@ -98,5 +98,13 @@ export default function SearchPage() {
 				<ProductList products={products} />
 			</section>
 		</>
+	);
+}
+
+export default function SearchPage() {
+	return (
+		<Suspense fallback={<div className="mx-auto max-w-7xl px-8 py-8">Ładowanie...</div>}>
+			<SearchContent />
+		</Suspense>
 	);
 }
