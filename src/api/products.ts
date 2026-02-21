@@ -48,24 +48,31 @@ export async function executeGraphQL<TResult, TVariables>({
 }
 
 // --- ProductGetList ---
+// API na Vercel zwraca ProductList z polem "data"
 
-type ProductGetListQuery = {
-	products: Array<{
-		id: string;
-		name: string;
-		description?: string | null;
-		price?: number | null;
-		rating?: number | null;
-		images: Array<{ url: string }>;
-		categories: Array<{ name?: string | null }>;
-	}>;
+type ProductItem = {
+	id: string;
+	name: string;
+	description?: string | null;
+	price?: number | null;
+	rating?: number | null;
+	images: Array<{ url: string }>;
+	categories: Array<{ name?: string | null }>;
 };
 
-const ProductGetListDocument = new TypedDocumentString(
+type ProductGetListQuery = {
+	products: Array<ProductItem> | { data: Array<ProductItem> };
+};
+
+const ProductGetListDocumentList = new TypedDocumentString(
+	`query ProductGetList { products { data { id name description price rating images { url } categories { name } } } }`,
+) as unknown as TypedDocumentString<ProductGetListQuery, Record<string, never>>;
+
+const ProductGetListDocumentDirect = new TypedDocumentString(
 	`query ProductGetList { products { id name description price rating images { url } categories { name } } }`,
 ) as unknown as TypedDocumentString<ProductGetListQuery, Record<string, never>>;
 
-function mapToProductItem(product: ProductGetListQuery["products"][number]): ProductItemType {
+function mapToProductItem(product: ProductItem): ProductItemType {
 	return {
 		id: product.id,
 		name: product.name,
@@ -77,15 +84,35 @@ function mapToProductItem(product: ProductGetListQuery["products"][number]): Pro
 	};
 }
 
+function normalizeProducts(raw: ProductGetListQuery["products"]): ProductItem[] {
+	if (!raw) return [];
+	return Array.isArray(raw) ? raw : (raw as { data?: ProductItem[] }).data ?? [];
+}
+
 export async function getProductList(_opts?: {
 	sort?: string;
 	order?: string;
 }): Promise<ProductItemType[]> {
-	const data = await executeGraphQL({
-		query: ProductGetListDocument,
-		next: { revalidate: 15 },
-	});
-	return data.products.map(mapToProductItem);
+	// Najpierw ProductList (data) – Vercel; fallback: tablica – lokalnie
+	try {
+		const data = await executeGraphQL({
+			query: ProductGetListDocumentList,
+			next: { revalidate: 15 },
+		});
+		const list = normalizeProducts(data.products);
+		if (list.length > 0) return list.map(mapToProductItem);
+	} catch {
+		// ignoruj – spróbuj bezpośredniego zapytania
+	}
+	try {
+		const data = await executeGraphQL({
+			query: ProductGetListDocumentDirect,
+			next: { revalidate: 15 },
+		});
+		return normalizeProducts(data.products).map(mapToProductItem);
+	} catch {
+		return [];
+	}
 }
 
 // --- ProductGetById ---

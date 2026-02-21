@@ -1,5 +1,4 @@
 import Rating from "@mui/material/Rating";
-import Stack from "@mui/material/Stack";
 import { formatMoney } from "@/app/utils/formatMoney";
 import { type ProductItemType } from "@/ui/types";
 
@@ -22,9 +21,9 @@ export const ProductListItemDescription = ({
 					{formatMoney(price / 100)}
 				</p>
 				<div className="flex items-center gap-1.5">
-					<Stack spacing={1} className="flex items-end">
-						<Rating name="size-small" defaultValue={rating} size="small" readOnly />
-					</Stack>
+					<div className="flex items-end">
+						<Rating name="size-small" defaultValue={rating ?? 0} size="small" readOnly />
+					</div>
 					<span data-testid="product-rating" className="text-xs text-neutral-500">
 						{rating != null ? `${rating.toFixed(1)}` : "—"}
 					</span>
