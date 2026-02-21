@@ -2,7 +2,7 @@ query ProductCategoryBySlug($slug: String) {
 	category(where: { slug: $slug }) {
 		name
 		description
-		products(first: 500) {
+		products {
 			name
 			id
 			images {

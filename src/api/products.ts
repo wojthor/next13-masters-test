@@ -62,7 +62,7 @@ type ProductGetListQuery = {
 };
 
 const ProductGetListDocument = new TypedDocumentString(
-	`query ProductGetList { products(first: 500) { id name description price rating images { url } categories { name } } }`,
+	`query ProductGetList { products { id name description price rating images { url } categories { name } } }`,
 ) as unknown as TypedDocumentString<ProductGetListQuery, Record<string, never>>;
 
 function mapToProductItem(product: ProductGetListQuery["products"][number]): ProductItemType {
@@ -166,7 +166,7 @@ type ProductCategoryBySlugQuery = {
 };
 
 const ProductCategoryBySlugDocument = new TypedDocumentString(
-	`query ProductCategoryBySlug($slug: String) { category(where: { slug: $slug }) { name description products(first: 500) { id name price rating images { url } categories { name } } } }`,
+	`query ProductCategoryBySlug($slug: String) { category(where: { slug: $slug }) { name description products { id name price rating images { url } categories { name } } } }`,
 ) as unknown as TypedDocumentString<ProductCategoryBySlugQuery, ProductCategoryBySlugVariables>;
 
 type CategoryProduct = NonNullable<ProductCategoryBySlugQuery["category"]>["products"][number];
@@ -202,14 +202,13 @@ export async function getProductCategory({
 }
 
 // --- GetCategories (navbar) ---
-// API zwraca CategoryList z polem "data" (lista kategorii)
 
 type GetCategoriesQuery = {
-	categories: { data: Array<{ name?: string | null; slug?: string | null }> };
+	categories: Array<{ name?: string | null; slug?: string | null }>;
 };
 
 const GetCategoriesDocument = new TypedDocumentString(
-	`query GetCategories { categories { data { name slug } } }`,
+	`query GetCategories { categories { name slug } }`,
 ) as unknown as TypedDocumentString<GetCategoriesQuery, Record<string, never>>;
 
 export type NavCategory = { name: string; slug: string };
@@ -219,8 +218,7 @@ export async function getCategories(): Promise<NavCategory[]> {
 		query: GetCategoriesDocument,
 		next: { revalidate: 60 },
 	});
-	const list = data.categories?.data ?? [];
-	return list
+	return (data.categories ?? [])
 		.filter(
 			(c): c is { name: string; slug: string } =>
 				typeof c.name === "string" && typeof c.slug === "string",
