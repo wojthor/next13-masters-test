@@ -208,7 +208,7 @@ type GetCategoriesQuery = {
 };
 
 const GetCategoriesDocument = new TypedDocumentString(
-	`query GetCategories { categories { name slug } }`,
+	`query GetCategories { categories(first: 100) { name slug } }`,
 ) as unknown as TypedDocumentString<GetCategoriesQuery, Record<string, never>>;
 
 export type NavCategory = { name: string; slug: string };
