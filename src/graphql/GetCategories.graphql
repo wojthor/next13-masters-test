@@ -1,5 +1,5 @@
 query GetCategories {
-	categories(first: 100) {
+	categories {
 		name
 		slug
 	}
