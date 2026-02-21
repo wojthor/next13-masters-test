@@ -202,28 +202,59 @@ export async function getProductCategory({
 }
 
 // --- GetCategories (navbar) ---
+// Na Vercel API zwraca CategoryList z polem "data"; lokalnie może zwracać [Category].
 
 type GetCategoriesQuery = {
-	categories: Array<{ name?: string | null; slug?: string | null }>;
+	categories:
+		| Array<{ name?: string | null; slug?: string | null }>
+		| { data?: Array<{ name?: string | null; slug?: string | null }> };
 };
 
-const GetCategoriesDocument = new TypedDocumentString(
+const GetCategoriesDocumentList = new TypedDocumentString(
+	`query GetCategories { categories { data { name slug } } }`,
+) as unknown as TypedDocumentString<GetCategoriesQuery, Record<string, never>>;
+
+const GetCategoriesDocumentDirect = new TypedDocumentString(
 	`query GetCategories { categories { name slug } }`,
 ) as unknown as TypedDocumentString<GetCategoriesQuery, Record<string, never>>;
 
 export type NavCategory = { name: string; slug: string };
 
-export async function getCategories(): Promise<NavCategory[]> {
-	const data = await executeGraphQL({
-		query: GetCategoriesDocument,
-		next: { revalidate: 60 },
-	});
-	return (data.categories ?? [])
+function normalizeCategories(
+	raw: GetCategoriesQuery["categories"],
+): Array<{ name: string; slug: string }> {
+	if (!raw) return [];
+	const list = Array.isArray(raw) ? raw : (raw as { data?: unknown[] }).data ?? [];
+	return list
 		.filter(
 			(c): c is { name: string; slug: string } =>
-				typeof c.name === "string" && typeof c.slug === "string",
+				c != null && typeof (c as { name?: unknown }).name === "string" && typeof (c as { slug?: unknown }).slug === "string",
 		)
 		.map((c) => ({ name: c.name, slug: c.slug }));
+}
+
+export async function getCategories(): Promise<NavCategory[]> {
+	// Najpierw próba CategoryList (data) – używane na Vercel
+	try {
+		const data = await executeGraphQL({
+			query: GetCategoriesDocumentList,
+			next: { revalidate: 60 },
+		});
+		const list = normalizeCategories(data.categories);
+		if (list.length > 0) return list;
+	} catch {
+		// ignoruj – spróbuj bezpośredniego zapytania
+	}
+	// Fallback: categories jako tablica [Category] – np. lokalnie
+	try {
+		const data = await executeGraphQL({
+			query: GetCategoriesDocumentDirect,
+			next: { revalidate: 60 },
+		});
+		return normalizeCategories(data.categories);
+	} catch {
+		return [];
+	}
 }
 
 // --- Search (dla strony /search) ---
