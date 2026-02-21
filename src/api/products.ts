@@ -202,13 +202,14 @@ export async function getProductCategory({
 }
 
 // --- GetCategories (navbar) ---
+// API zwraca CategoryList z polem "data" (lista kategorii)
 
 type GetCategoriesQuery = {
-	categories: Array<{ name?: string | null; slug?: string | null }>;
+	categories: { data: Array<{ name?: string | null; slug?: string | null }> };
 };
 
 const GetCategoriesDocument = new TypedDocumentString(
-	`query GetCategories { categories { name slug } }`,
+	`query GetCategories { categories { data { name slug } } }`,
 ) as unknown as TypedDocumentString<GetCategoriesQuery, Record<string, never>>;
 
 export type NavCategory = { name: string; slug: string };
@@ -218,7 +219,8 @@ export async function getCategories(): Promise<NavCategory[]> {
 		query: GetCategoriesDocument,
 		next: { revalidate: 60 },
 	});
-	return (data.categories ?? [])
+	const list = data.categories?.data ?? [];
+	return list
 		.filter(
 			(c): c is { name: string; slug: string } =>
 				typeof c.name === "string" && typeof c.slug === "string",

@@ -1,6 +1,8 @@
 query GetCategories {
 	categories {
-		name
-		slug
+		data {
+			name
+			slug
+		}
 	}
 }
